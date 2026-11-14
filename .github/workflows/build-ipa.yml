@@ -19,36 +19,36 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
-      - name: Install Node Dependencies
+      - name: Install Dependencies
         run: npm install
 
       - name: Build Web Application
         run: npm run build
 
-      - name: Setup Capacitor iOS Project
+      - name: Add and Sync Capacitor iOS
         run: |
           npx cap add ios || true
           npx cap sync ios
 
-      - name: Build Xcode Archive (Unsigned)
+      - name: Build iOS App (.app)
         run: |
-          xcodebuild -workspace ios/App/App.xcworkspace \
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace \
             -scheme App \
             -configuration Release \
+            -sdk iphoneos \
             -destination 'generic/platform=iOS' \
-            -archivePath build/App.xcarchive \
-            archive \
+            -derivedDataPath derived_data \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES
+            build
 
       - name: Package Payload into .ipa
         run: |
           mkdir -p Payload
-          cp -r build/App.xcarchive/Products/Applications/App.app Payload/
+          cp -r ios/App/derived_data/Build/Products/Release-iphoneos/App.app Payload/
           zip -r MyMeal.ipa Payload
 
       - name: Upload IPA Artifact
