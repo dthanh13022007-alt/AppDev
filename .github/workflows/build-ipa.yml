@@ -26,15 +26,13 @@ jobs:
       - name: Build Web Application
         run: npm run build
 
-      - name: Add and Sync Capacitor iOS
-        run: |
-          npx cap add ios || true
-          npx cap sync ios
+      - name: Copy Web Assets to iOS Native
+        run: npx cap copy ios
 
       - name: Build iOS App (.app)
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace \
+          xcodebuild -project App.xcodeproj \
             -scheme App \
             -configuration Release \
             -sdk iphoneos \

@@ -23,6 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-# Capacitor native folders (auto-generated in CI)
-ios/
+# Capacitor native folders
 android/
+ios/App/derived_data/
+ios/App/build/
+ios/App/Pods/
+ios/App/.build/
